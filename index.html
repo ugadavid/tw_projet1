@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interface de saisie de notes - Bootstrap + jQuery</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="bg-light">
+  <div class="container py-4">
+    <h1 class="h3 mb-3">Saisie des élèves & calcul des notes</h1>
+    <p class="hint mb-4">Bootstrap 5 pour l'UI · jQuery 3.7 pour la logique · Pas d'autre lib.</p>
+
+    <!-- Formulaire -->
+    <div class="bg-white p-4 rounded-2xl shadow-soft mb-4">
+      <form id="studentForm" class="row g-3" novalidate>
+        <!-- Nom complet pour démontrer la séparation prénom/nom -->
+        <div class="col-md-6">
+          <label for="fullName" class="form-label">Nom complet (Prénom Nom)</label>
+          <input type="text" class="form-control" id="fullName" placeholder="Ex: Jean Serge Patrice Dupont Durant" required>
+          <div class="invalid-feedback">Saisir « Prénom Nom ».</div>
+          <div id="nameSplitHelper" class="form-text d-none">
+            Cas multi-mots détecté. Choisir combien de <strong>mots de fin</strong> constituent le <em>nom de famille</em>.
+            <div class="mt-2 d-flex align-items-center gap-2">
+              <label class="form-label mb-0" for="lastCount">Nom (mots de fin)&nbsp;:</label>
+              <select id="lastCount" class="form-select form-select-sm" style="max-width: 140px;"></select>
+              <span id="namePreview" class="badge text-bg-light"></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" placeholder="exemple@domaine.fr" required>
+          <div class="invalid-feedback">Adresse email invalide.</div>
+        </div>
+        <div class="col-md-6">
+          <label for="birth" class="form-label">Date de naissance</label>
+          <input type="date" class="form-control" id="birth" required>
+          <div class="invalid-feedback" id="birthFeedback">Indiquer une date valide.</div>
+          <div class="form-text">Âge minimum appliqué : <span id="minAgeLabel">16</span> ans. Aucune date future.</div>
+        </div>
+        <div class="col-md-6">
+          <label for="rowColor" class="form-label">Couleur de fond (ligne)</label>
+          <div class="input-group">
+            <span class="input-group-text">🎨</span>
+            <input type="color" class="form-control form-control-color" id="rowColor" value="#e8f4ff" title="Choisir une couleur">
+          </div>
+        </div>
+        <div class="col-12">
+          <label for="grades" class="form-label">Notes</label>
+          <input type="text" class="form-control" id="grades" placeholder="Saisir plusieurs notes au format 14;15,6;8 (séparateur ';', décimales avec virgule)" required>
+          <div class="form-text">Chiffres uniquement. Valeurs acceptées : 0 à 20. Exemples valides : <code>12;18;19,5</code> • <code>0;20;13,25</code></div>
+          <div class="invalid-feedback">Format invalide : utiliser « ; » comme séparateur, « , » pour décimales, chaque note entre 0 et 20.</div>
+        </div>
+        <div class="col-12 d-flex flex-wrap gap-2">
+          <button type="submit" class="btn btn-primary">Ajouter au tableau</button>
+          <button type="reset" class="btn btn-outline-secondary" id="resetForm">Réinitialiser le formulaire</button>
+          <button type="button" id="clearTable" class="btn btn-outline-danger">Réinitialiser le tableau</button>
+          <button type="button" id="exportCsv" class="btn btn-outline-primary ms-auto">Exporter CSV</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tableau -->
+    <div class="bg-white p-3 rounded-2xl shadow-soft">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle" id="studentsTable">
+          <thead class="table-light">
+            <tr>
+              <th class="sortable" data-key="first">Prénom <span class="sort-indicator"></span></th>
+              <th class="sortable" data-key="last">Nom <span class="sort-indicator"></span></th>
+              <th class="sortable" data-key="emailMasked">Email (anonymisé) <span class="sort-indicator"></span></th>
+              <th class="sortable" data-key="birth">Date de naissance <span class="sort-indicator"></span></th>
+              <th class="sortable text-center" data-key="count"># <span class="sort-indicator"></span></th>
+              <th class="sortable text-center" data-key="min">Min <span class="sort-indicator"></span></th>
+              <th class="sortable text-center" data-key="max">Max <span class="sort-indicator"></span></th>
+              <th class="sortable text-center" data-key="avgNum">Moy. <span class="sort-indicator"></span></th>
+              <th>Couleur</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Lignes insérées ici -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Explications (courtes) -->
+    <div class="small text-secondary mt-3">
+      <p class="mb-1"><strong>Conventions :</strong> Bootstrap 5 pour la grille, formulaires, table, utilitaires. jQuery 3.7 pour la logique DOM/événements.</p>
+      <ul class="mb-0">
+        <li>Cas multi-noms : sélecteur <em>« mots de fin = nom de famille »</em> pour gérer les doubles noms/particules.</li>
+        <li>Email anonymisé → <code>première lettre + **** + @domaine</code> (ex: <code>d****@uga.fr</code>).</li>
+        <li>Notes : séparées par <code>;</code>, virgule pour décimales (<code>15,5</code>). Validation stricte 0-20.</li>
+        <li>Date : pas de futur, âge minimum (<span id="minAgeLabel2">16</span> ans).</li>
+        <li>Suppression de ligne, en-têtes triables, export CSV, bouton de réinitialisation du tableau.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- jQuery + Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+<script src="App/AppConfig.js"></script>
+<script src="App/Utils.js"></script>
+<script src="App/UIHandlers.js"></script>
+<script src="App/StudentManager.js"></script>
+<script src="App/AppMain.js"></script>
+
+<script>
+  AppMain.init();
+</script>
+
+</body>
+</html>

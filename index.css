@@ -1,0 +1,8 @@
+/* On reste fidèle à Bootstrap: utilitaires custom minimaux pour le confort visuel */
+.rounded-2xl { border-radius: 1rem; }
+.shadow-soft { box-shadow: 0 10px 20px rgba(0,0,0,.06); }
+.swatch { width: 1.25rem; height: 1.25rem; border-radius: .25rem; display: inline-block; vertical-align: middle; border: 1px solid rgba(0,0,0,.1); }
+.table thead th { white-space: nowrap; user-select: none; }
+.sortable { cursor: pointer; }
+.sort-indicator { font-size: .8rem; opacity: .6; margin-left: .25rem; }
+.hint { font-size: .875rem; color: #6c757d; }

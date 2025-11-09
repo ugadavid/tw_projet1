@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mini démo – Bootstrap + jQuery</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    :root { --brand: #4A90E2; }
+    body { background: #f8fafc; }
+    .navbar-brand span { color: var(--brand); font-weight: 700; }
+    .hero {
+      background: linear-gradient(135deg, #eaf4ff 0%, #fdfcff 100%);
+      border-bottom: 1px solid #e6eaf0;
+    }
+    .shadow-soft { box-shadow: 0 10px 20px rgba(0,0,0,.06); }
+    .rounded-2xl { border-radius: 1rem; }
+    .todo-item.done { text-decoration: line-through; opacity: .6; }
+    .form-hint { font-size: .9rem; color: #6c757d; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#"><span>Zenith</span> Starter</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#features">Fonctionnalités</a></li>
+          <li class="nav-item"><a class="nav-link" href="#todo">To‑do</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero py-5">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <h1 class="display-5 fw-bold mb-3">Page démo <span class="text-primary">Bootstrap&nbsp;5</span> + <span class="text-primary">jQuery</span></h1>
+          <p class="lead text-secondary mb-4">Un squelette propre pour démarrer vite : navbar collante, cartes, modal, toast, to‑do en jQuery et petit formulaire.</p>
+          <div class="d-flex gap-2">
+            <button id="btnOpenModal" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#demoModal">Ouvrir le modal</button>
+            <button id="btnShowToast" class="btn btn-outline-primary btn-lg">Afficher un toast</button>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="bg-white p-4 rounded-2xl shadow-soft">
+            <h2 class="h5 mb-3">Snippet jQuery (exemple)</h2>
+            <pre class="mb-0"><code>$("#btnShowToast").on("click", function(){
+  const toast = new bootstrap.Toast($("#demoToast")[0]);
+  toast.show();
+});</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features -->
+  <section id="features" class="py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-12 col-lg-4">
+          <div class="card h-100 shadow-soft">
+            <div class="card-body">
+              <h3 class="h5">Cartes & layout</h3>
+              <p class="mb-0">Grille responsive, cartes avec ombres douces, classes utilitaires.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card h-100 shadow-soft">
+            <div class="card-body">
+              <h3 class="h5">Composants interactifs</h3>
+              <p class="mb-0">Modal, Toast, Collapse. Déclenchés en data‑attributes ou via jQuery.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card h-100 shadow-soft">
+            <div class="card-body">
+              <h3 class="h5">jQuery helpers</h3>
+              <p class="mb-0">Handlers, DOM API, mini to‑do, validation légère du formulaire.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- To‑do demo -->
+  <section id="todo" class="py-5 bg-white border-top border-bottom">
+    <div class="container">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-6">
+          <h2 class="h4 mb-3">Mini To‑do (jQuery)</h2>
+          <div class="input-group mb-3">
+            <input type="text" id="todoInput" class="form-control" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche">
+            <button class="btn btn-primary" id="addTodo">Ajouter</button>
+          </div>
+          <ul id="todoList" class="list-group shadow-soft">
+            <li class="list-group-item d-flex justify-content-between align-items-center todo-item">
+              Exemple : cliquer pour marquer comme fait
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary btnToggle">Fait</button>
+                <button class="btn btn-sm btn-outline-danger btnRemove">Suppr.</button>
+              </div>
+            </li>
+          </ul>
+          <div class="mt-3 d-flex gap-2">
+            <button class="btn btn-outline-secondary" id="clearDone">Effacer les terminées</button>
+            <button class="btn btn-outline-secondary" id="seedTodos">Données de démo</button>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <h2 class="h5 mb-3">Collapse (FAQ rapide)</h2>
+          <p class="mb-2">Un composant Bootstrap déclenché au clic :</p>
+          <p>
+            <a class="btn btn-outline-primary" data-bs-toggle="collapse" href="#faq1" role="button" aria-expanded="false" aria-controls="faq1">Qu’utilise cette page ?</a>
+          </p>
+          <div class="collapse" id="faq1">
+            <div class="card card-body">
+              Bootstrap 5.3.3 (CDN) + jQuery 3.7 pour les interactions personnalisées. Aucune build‑tool requise.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact form -->
+  <section id="contact" class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="bg-white p-4 rounded-2xl shadow-soft">
+            <h2 class="h4 mb-3">Contact</h2>
+            <form id="contactForm" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Nom</label>
+                  <input type="text" class="form-control" id="name" required>
+                  <div class="invalid-feedback">Indique ton nom.</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" required>
+                  <div class="invalid-feedback">Adresse email invalide.</div>
+                </div>
+                <div class="col-12">
+                  <label for="message" class="form-label">Message</label>
+                  <textarea class="form-control" id="message" rows="4" required></textarea>
+                  <div class="form-hint">Quelques mots suffisent pour la démo.</div>
+                  <div class="invalid-feedback">Écris un message.</div>
+                </div>
+              </div>
+              <div class="mt-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+                <button type="reset" class="btn btn-outline-secondary">Réinitialiser</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-4 text-center text-secondary small">
+    <div class="container">Fait avec ❤ – Bootstrap 5 + jQuery • <a href="#" class="link-secondary" id="backToTop">Retour en haut</a></div>
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal fade" id="demoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Hello 👋</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Ceci est un modal Bootstrap. Il peut être déclenché par data‑attributes ou via JS.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="demoToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Notification</strong>
+        <small>Maintenant</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Coucou ! Ceci est un toast déclenché par jQuery.
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery + Bootstrap Bundle JS (avec Popper) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <script>
+    // jQuery ready
+    $(function(){
+      // Smooth scroll pour les liens de nav
+      $('a.nav-link, #backToTop').on('click', function(e){
+        const target = $(this).attr('href');
+        if (target && target.startsWith('#')) {
+          e.preventDefault();
+          $('html, body').animate({ scrollTop: $(target).offset().top - 70 }, 400);
+        }
+      });
+
+      // Toast via jQuery
+      $('#btnShowToast').on('click', function(){
+        const toast = new bootstrap.Toast($('#demoToast')[0]);
+        toast.show();
+      });
+
+      // To‑do logic
+      function makeItem(text){
+        return $(
+          `<li class="list-group-item d-flex justify-content-between align-items-center todo-item">
+            <span class="todo-text"></span>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-outline-secondary btnToggle">Fait</button>
+              <button class="btn btn-sm btn-outline-danger btnRemove">Suppr.</button>
+            </div>
+          </li>`
+        ).find('.todo-text').text(text).end();
+      }
+
+      $('#addTodo').on('click', function(){
+        const val = $('#todoInput').val().trim();
+        if(!val) return $('#todoInput').trigger('focus');
+        $('#todoList').append(makeItem(val));
+        $('#todoInput').val('');
+      });
+
+      $('#todoInput').on('keydown', function(e){
+        if(e.key === 'Enter') { e.preventDefault(); $('#addTodo').click(); }
+      });
+
+      $('#todoList').on('click', '.btnToggle', function(){
+        $(this).closest('.todo-item').toggleClass('done');
+      });
+
+      $('#todoList').on('click', '.btnRemove', function(){
+        $(this).closest('.todo-item').remove();
+      });
+
+      $('#clearDone').on('click', function(){
+        $('#todoList .todo-item.done').remove();
+      });
+
+      $('#seedTodos').on('click', function(){
+        const seeds = ['Préparer la présentation', 'Écrire le module A1', 'Café ☕', 'Relire la PR #42'];
+        seeds.forEach(s => $('#todoList').append(makeItem(s)));
+      });
+
+      // Form validation minimaliste (Bootstrap + jQuery)
+      $('#contactForm').on('submit', function(e){
+        e.preventDefault();
+        const form = this;
+        // HTML5 validity + classes Bootstrap
+        let ok = true;
+        $(form).find('input, textarea').each(function(){
+          const fieldOk = this.checkValidity();
+          $(this).toggleClass('is-invalid', !fieldOk).toggleClass('is-valid', fieldOk);
+          if(!fieldOk) ok = false;
+        });
+        if(ok){
+          const toast = new bootstrap.Toast($('#demoToast')[0]);
+          $('#demoToast .toast-body').text('Merci ! Ton message a été simulé avec succès.');
+          toast.show();
+          form.reset();
+          $(form).find('.is-valid').removeClass('is-valid');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
