@@ -16,7 +16,6 @@ class StudentManager {
         $(document).ready(() => {
             this.uiElements = app.ui.uiElements;
             this.bindForm();
-            this.bindSorting();
         });
     }
 
@@ -95,13 +94,24 @@ class StudentManager {
 
     /** Crée et insère une ligne <tr> + data('record') pour tri/export. */
     addRow(data) {
+
+        console.log('Ajout de la ligne:', data);
+        const bg = data.color || '#ffffff';
+        const fg = Utils.getTextColorForBackground(bg);
+
         const tableBodyEl = this.uiElements.tableBody;
         const tr = $('<tr>').css('background-color', data.color || '');
         tr.data('record', data);    // stocke l'objet brut, utile pour export/tri
 
+        // Définir les variables CSS sur la ligne : les <td> hériteront
+        tr[0].style.setProperty('--bs-table-bg', bg);
+        tr[0].style.setProperty('--bs-table-color', fg);
+        // (optionnel) si tu utilises .table-hover, fixe le hover pour éviter un changement
+        tr[0].style.setProperty('--bs-table-hover-bg', bg);
+        tr[0].style.setProperty('--bs-table-hover-color', fg);
+
         const delBtn = $('<button class="btn btn-sm btn-outline-danger">Supprimer</button>')
         .on('click', () => tr.remove());
-        const swatch = $('<span class="swatch me-2">').css('background-color', data.color || '#fff');
 
         // Colonnes
         tr.append($('<td>').text(data.first));
@@ -112,7 +122,7 @@ class StudentManager {
         tr.append($('<td class="text-center">').text(Utils.fmtFR(data.min)));
         tr.append($('<td class="text-center">').text(Utils.fmtFR(data.max)));
         tr.append($('<td class="text-center">').text(Number.isFinite(data.avgNum) ? Utils.fmtFR(data.avgNum.toFixed(2)) : ''));
-        tr.append($('<td>').append(swatch).append(document.createTextNode(data.color || '')));
+
         tr.append($('<td>').append(delBtn));
 
         tableBodyEl.append(tr);
@@ -123,73 +133,5 @@ class StudentManager {
         this.uiElements.tableBody.empty();
     }
 
-    /**
-     * Export CSV en FR :
-     * - sep ';'
-     * - virgule décimale
-     * - échappement des guillemets
-     */
-    exportCSV() {
-        const headers = ['Prenom','Nom','Email (anonymise)','Date de naissance','#','Min','Max','Moyenne','Couleur'];
-        const rows = this.uiElements.tableBody.find('tr').map(function() {
-        const r = $(this).data('record');
-        if (!r) return null;
-        return [
-            r.first, r.last, r.emailMasked, r.birth,
-            String(r.count),
-            r.min?.toString().replace('.', ',') || '',
-            r.max?.toString().replace('.', ',') || '',
-            Number.isFinite(r.avgNum) ? r.avgNum.toFixed(2).replace('.', ',') : '',
-            r.color || ''
-        ];
-        }).get();
-
-        const csv = [headers.join(';')]
-        .concat(rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')))
-        .join('\n');
-
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        $('<a>')
-        .attr({ href: url, download: 'eleves.csv' })
-        .appendTo('body')[0].click();
-        URL.revokeObjectURL(url);
-    }
-
-    /** Branche les clics de tri sur les <th.sortable>. */
-    bindSorting() {
-        this.uiElements.table.find('thead th.sortable').on('click', e => this.handleSortClick(e));
-    }
-
-    /** Gère l’état de tri (clé+direction) et déclenche un re-render. */
-    handleSortClick(e) {
-        const key = $(e.currentTarget).data('key');
-        if (this.sortState.key === key) this.sortState.dir *= -1;
-        else this.sortState = { key, dir: 1 };
-        this.clearIndicators();
-        $(e.currentTarget).find('.sort-indicator').text(this.sortState.dir === 1 ? '▲' : '▼');
-        this.renderSorted();
-    }
-
-    /** Trie les <tr> selon la clé/direction courante et réinsère dans le DOM. */
-    renderSorted() {
-        const rows = this.uiElements.tableBody.find('tr').get().map(tr => ({ el: tr, rec: $(tr).data('record') }));
-        const { key, dir } = this.sortState;
-        if (!key) return;
-        rows.sort((ra, rb) => dir * this.compare(ra.rec, rb.rec, key));
-        this.uiElements.tableBody.empty().append(rows.map(r => r.el));
-    }
-
-    /** Comparateur par type de colonne. */
-    compare(a, b, key) {
-        if (['count', 'min', 'max', 'avgNum'].includes(key))
-        return Number(a[key]) - Number(b[key]);
-        if (key === 'birth') return a[key].localeCompare(b[key]);
-        return String(a[key]).localeCompare(String(b[key]), 'fr', { sensitivity: 'base' });
-    }
-
-    /** Nettoie les indicateurs ▲/▼ dans tous les <th>. */
-    clearIndicators() {
-        this.uiElements.table.find('thead .sort-indicator').text('');
-    }
+    
 }

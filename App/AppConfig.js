@@ -18,8 +18,13 @@ class AppConfig {
         nameHelper: '#nameSplitHelper',             // bloc helper "split nom"
         namePreview: '#namePreview',                // aperçu du split prénom/nom
         minAgeLabel: '#minAgeLabel, #minAgeLabel2', // affichage dynamique de MIN_AGE
-        exportCsv: '#exportCsv',                    // bouton Export CSV
         clearTable: '#clearTable',                  // bouton Vider la table
-        resetForm: '#resetForm'                     // bouton Reset "cosmétique"
+        resetForm: '#resetForm',                    // bouton Reset "cosmétique"
+        rowColor: '#rowColor',                      //  couleur de fond
+        btnHelp: '#btnHelp',                        //  bouton Explications
+        helpOverlay: '#helpOverlay',                //  Overlay aide
+        btnHelpClose: '#btnHelpClose',              //  Bouton close overlay
+        btnHelpOk: '#btnHelpOk',                    //  Bouton Help Ok
+
     };
 }

@@ -10,7 +10,13 @@
 </head>
 <body class="bg-light">
   <div class="container py-4">
-    <h1 class="h3 mb-3">Saisie des élèves & calcul des notes</h1>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h4 mb-0">Saisie des élèves & calcul des notes</h1>
+      <button id="btnHelp" type="button" class="btn btn-sm btn-outline-secondary">
+        Explications
+      </button>
+    </div>
+
     <p class="hint mb-4">Bootstrap 5 pour l'UI · jQuery 3.7 pour la logique · Pas d'autre lib.</p>
 
     <!-- Formulaire -->
@@ -58,7 +64,6 @@
           <button type="submit" class="btn btn-primary">Ajouter au tableau</button>
           <button type="reset" class="btn btn-outline-secondary" id="resetForm">Réinitialiser le formulaire</button>
           <button type="button" id="clearTable" class="btn btn-outline-danger">Réinitialiser le tableau</button>
-          <button type="button" id="exportCsv" class="btn btn-outline-primary ms-auto">Exporter CSV</button>
         </div>
       </form>
     </div>
@@ -69,15 +74,14 @@
         <table class="table table-hover align-middle" id="studentsTable">
           <thead class="table-light">
             <tr>
-              <th class="sortable" data-key="first">Prénom <span class="sort-indicator"></span></th>
-              <th class="sortable" data-key="last">Nom <span class="sort-indicator"></span></th>
-              <th class="sortable" data-key="emailMasked">Email (anonymisé) <span class="sort-indicator"></span></th>
-              <th class="sortable" data-key="birth">Date de naissance <span class="sort-indicator"></span></th>
-              <th class="sortable text-center" data-key="count"># <span class="sort-indicator"></span></th>
-              <th class="sortable text-center" data-key="min">Min <span class="sort-indicator"></span></th>
-              <th class="sortable text-center" data-key="max">Max <span class="sort-indicator"></span></th>
-              <th class="sortable text-center" data-key="avgNum">Moy. <span class="sort-indicator"></span></th>
-              <th>Couleur</th>
+              <th>Prénom</th>
+              <th>Nom</th>
+              <th>Email (anonymisé)</th>
+              <th>Date de naissance</th>
+              <th>#</th>
+              <th>Min</th>
+              <th>Max</th>
+              <th>Moy.</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -96,10 +100,55 @@
         <li>Email anonymisé → <code>première lettre + **** + @domaine</code> (ex: <code>d****@uga.fr</code>).</li>
         <li>Notes : séparées par <code>;</code>, virgule pour décimales (<code>15,5</code>). Validation stricte 0-20.</li>
         <li>Date : pas de futur, âge minimum (<span id="minAgeLabel2">16</span> ans).</li>
-        <li>Suppression de ligne, en-têtes triables, export CSV, bouton de réinitialisation du tableau.</li>
+        <li>Suppression de ligne, bouton de réinitialisation du tableau.</li>
       </ul>
     </div>
   </div>
+
+
+
+  <div id="helpOverlay" class="help-overlay d-none" aria-hidden="true">
+    <div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="help-header">
+        <h2 id="helpTitle" class="h5 mb-0">Explications (structure & choix)</h2>
+        <button id="btnHelpClose" type="button" class="btn-close" aria-label="Fermer"></button>
+      </div>
+
+      <div class="help-body">
+        <p class="mb-2">
+          Cette page permet de saisir un élève (nom/prénom, notes, mail, date de naissance, couleur) puis d’ajouter une ligne
+          dans le tableau avec des calculs automatiques (min, max, moyenne, nombre de notes) et une anonymisation du mail.
+        </p>
+
+        <h3 class="h6 mt-3">Organisation du code</h3>
+        <ul class="mb-2">
+          <li><strong>AppMain</strong> : point d’entrée, instancie les modules.</li>
+          <li><strong>UIHandlers</strong> : gère le DOM et les événements d’interface (helper de nom, reset, etc.).</li>
+          <li><strong>StudentManager</strong> : logique métier (validation, calculs, ajout/suppression de lignes).</li>
+          <li><strong>Utils</strong> : fonctions “pures” (parsing des notes, moyenne, anonymisation, etc.).</li>
+          <li><strong>AppConfig</strong> : constantes, sélecteurs, paramètres métier (âge minimum...).</li>
+        </ul>
+
+        <h3 class="h6 mt-3">Choix et cas traités</h3>
+        <ul class="mb-2">
+          <li><strong>Noms composés / particules</strong> : tentative de gestion (ex. “de”, “du”, “van”, etc.) pour éviter de couper au mauvais endroit.</li>
+          <li><strong>Anonymisation mail</strong> : <code>sylvain.hatier@uga.fr</code> → <code>s****@uga.fr</code>.</li>
+          <li><strong>Notes</strong> : saisie multiple dans un champ (ex. <code>14;15,6;8</code>), puis calcul min/max/moyenne.</li>
+        </ul>
+
+        <h3 class="h6 mt-3">Limites (volontaires)</h3>
+        <ul class="mb-0">
+          <li>Le découpage nom/prénom reste heuristique : <em>“Bond, James Bond”</em> n’est pas géré 😄</li>
+          <li>Le format des notes doit être respecté (séparateur “;”, virgule décimale acceptée).</li>
+        </ul>
+      </div>
+
+      <div class="help-footer">
+        <button id="btnHelpOk" type="button" class="btn btn-primary">OK</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- jQuery + Bootstrap -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>

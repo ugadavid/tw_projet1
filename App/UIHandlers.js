@@ -38,9 +38,20 @@ class UIHandlers {
 
         el.fullName.on('input blur', () => this.refreshNameHelper());
         el.lastCount.on('change', () => this.updatePreview());
-        el.exportCsv.on('click', () => this.app.manager.exportCSV());
         el.clearTable.on('click', () => this.app.manager.clearTable());
         el.resetForm.on('click', () => this.resetForm());
+
+        el.btnHelp.on('click', () => this.openHelp());
+        el.btnHelpClose.on('click', () => this.closeHelp());
+        el.btnHelpOk.on('click', () => this.closeHelp());
+
+        el.helpOverlay.on('click', (e) => {
+            if (e.target === el.helpOverlay[0]) this.closeHelp(); // clic en dehors
+        });
+
+        $(document).on('keydown', (e) => {
+            if (e.key === 'Escape') this.closeHelp();
+        });
     }
 
     /**
@@ -87,6 +98,19 @@ class UIHandlers {
         const el = this.uiElements;
         const formEl = el.form;
         formEl.find('.is-invalid, .is-valid').removeClass('is-invalid is-valid');
+        el.namePreview.text('');
         el.nameHelper.addClass('d-none');
     }
+
+
+    openHelp() {
+        const el = this.uiElements;
+        el.helpOverlay.removeClass('d-none').attr('aria-hidden', 'false');
+    }
+
+    closeHelp() {
+        const el = this.uiElements;
+        el.helpOverlay.addClass('d-none').attr('aria-hidden', 'true');
+    }
+
 }

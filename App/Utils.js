@@ -80,8 +80,20 @@ class Utils {
         let age = today.getFullYear() - d.getFullYear();
         const m = today.getMonth() - d.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
-        
+
         if (age < minAge) return { ok: false, msg: `Âge minimum ${minAge} ans.` };
         return { ok: true };
     }
+
+
+    static getTextColorForBackground(bgColor) {
+        if (!bgColor) return '#000';
+        const c = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+        const r = parseInt(c.substring(0, 2), 16);
+        const g = parseInt(c.substring(2, 4), 16);
+        const b = parseInt(c.substring(4, 6), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return luminance > 0.5 ? '#000' : '#fff';
+    }
+
 }
